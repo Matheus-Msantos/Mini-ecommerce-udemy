@@ -15,9 +15,9 @@ function ListarProdutos(props) {
   ];
 
   function exibirCard() {
-
+    let key = 1;
     const cards = produtos.map((produto, index) =>
-      <Card key={index}>
+      <Card key={index} data-testid={'card' + key++}>
         <Card.Img variant="top" src={placeholder} />
         <Card.Body className="text-center">
           <Card.Title>
