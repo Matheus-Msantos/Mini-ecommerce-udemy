@@ -7,7 +7,7 @@ describe('Teste do componente menu', () => {
 
   it('Deve renderizar o componente sem errois', () => {
     render(<Menu />);
-    const text = screen.getByText(/menu/i);
+    const text = screen.getByText(/Mini Ecommerce/i);
     expect(text).toBeInTheDocument();
   });
 
