@@ -1,6 +1,6 @@
 import React from 'react';
 import PropsTypes from 'prop-types';
-import NavDropdown from 'react-bootstrap';
+import { NavDropdown } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSadTear } from '@fortawesome/free-solid-svg-icons';
 
@@ -11,7 +11,7 @@ function ItensCarrinhoMenu(props) {
 
     if (props.produtos.length === 0) {
       return (
-        <NavDropdown.Item href="" data-testId="itens">
+        <NavDropdown.Item href="" data-testid="itens">
           <FontAwesomeIcon icon={faSadTear} />
           &nbsp;
           Carrinho vazio...
@@ -34,4 +34,4 @@ ItensCarrinhoMenu.propsTypes = {
   produtos: PropsTypes.array.isRequired,
 }
 
-export default ItensCarrinhoMenu();
+export default ItensCarrinhoMenu;

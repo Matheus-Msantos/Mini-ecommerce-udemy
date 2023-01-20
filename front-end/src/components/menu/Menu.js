@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faShoppingBasket, faCashRegister, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import ItensCarrinhoMenu from './itens-carrinho-menu';
 
 function Menu(props) {
 
@@ -42,7 +43,7 @@ function Menu(props) {
               </NavDropdown.Item>
 
               <NavDropdown.Divider />
-              { /*TO DO Itens do carrinho*/}
+              <ItensCarrinhoMenu produtos={props.produtos} />
               <NavDropdown.Divider />
 
               <NavDropdown.Item href="" data-testid="total-carrinho">
@@ -53,7 +54,7 @@ function Menu(props) {
                 <NavDropdown.Divider />
                 <NavDropdown.Item
                   href=""
-                  onClick={() => props.handleExibirCheckout(calcularTotal())}>
+                  onClick={() => props.handleExibirCheckout(calcularTotal)}>
 
                   <FontAwesomeIcon icon={faCashRegister} />
                   Finalizar compra
