@@ -12,7 +12,7 @@ function ListarCidades(props) {
     async function obterEstados() {
       try {
         let { data } = await axios.get(CIDADES_URL.replace(':estado', props.estado));
-        setCidades(data);
+        setCidades(data[0]);
       } catch (error) {
         setCidades([]);
       }
@@ -24,7 +24,9 @@ function ListarCidades(props) {
 
   }, [props.estado]);
 
-  return cidades[0]?.map(cidade =>
+  console.log(cidades)
+
+  return cidades.map(cidade =>
     <option key={cidade} value={cidade} data-testid={cidade}>
       {cidade}
     </option>
