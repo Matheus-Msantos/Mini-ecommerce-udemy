@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import { Form, Row, Col, Button, Modal } from 'react-bootstrap';
+
 import DatePicker, { registerLocale } from 'react-datepicker';
 import { Formik } from 'formik';
+import { validarCpf, formatarCpf } from '../../utils/cpf-util';
+import { formatarCep } from '../../utils/cep-util';
+
 import pt from 'date-fns/locale/pt';
 import PropTypes from 'prop-types';
 import ListarEstado from './Listar-estado';
 import ListarCidades from './Listar-cidades';
+
+import * as yup from 'yup';
 import 'react-datepicker/dist/react-datepicker.css';
 
 registerLocale('pt', pt);
@@ -16,6 +22,17 @@ function Checkout(props) {
   const [formEnviado, setFormEnviado] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showErroModal, setShowErroModal] = useState(false);
+
+  const schema = yup.object({
+    email: yup.string().email().required(),
+    nomeCompleto: yup.string().required().min(5),
+    cpf: yup.string().required().min(14).max(14).test('cpf-valido', 'cpf inválido', (cpf) => validarCpf(cpf)),
+    endereco: yup.string().required(),
+    cidade: yup.string().required(),
+    cep: yup.string().required().min(9).max(9),
+    emailPromocional: yup.string().required(),
+    termosCondicoes: yup.bool().oneOf([true]),
+  });
 
   function visivel() {
     return props.visivel ? 'bg-light p-5' : 'hidden';
@@ -57,6 +74,7 @@ function Checkout(props) {
           termosCondicoes: false,
           emailPromocional: 'S',
         }}
+        validationSchema={schema}
       >
         {({
           handleSubmit,
@@ -150,7 +168,10 @@ function Checkout(props) {
                   name='cpf'
                   data-testid='text-cpf'
                   value={values.cpf}
-                  onChange={handleChange}
+                  onChange={e => {
+                    e.currentTarget.value = formatarCpf(e.currentTarget.value);
+                    handleChange(e);
+                  }}
                   isValid={touched.cpf && !errors.cpf}
                   isInvalid={touched.cpf && !!errors.cpf}
                 />
@@ -226,7 +247,7 @@ function Checkout(props) {
                   isValid={touched.cidade && !errors.cidade}
                   isInvalid={touched.cidade && !!errors.cidade}
                 >
-                  <ListarCidades estado={'SP'} />
+                  <ListarCidades estado={values.estado} />
                 </Form.Control>
 
                 <Form.Control.Feedback type='invalid'>
@@ -248,7 +269,10 @@ function Checkout(props) {
                   name='cep'
                   data-testid='text-cep'
                   value={values.cep}
-                  onChange={handleChange}
+                  onChange={e => {
+                    e.currentTarget.value = formatarCep(e.currentTarget.value);
+                    handleChange(e);
+                  }}
                   isValid={touched.cep && !errors.cep}
                   isInvalid={touched.cep && !!errors.cep}
                 />
