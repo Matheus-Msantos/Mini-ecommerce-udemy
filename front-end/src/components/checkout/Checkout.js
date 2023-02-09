@@ -13,10 +13,13 @@ import ListarCidades from './Listar-cidades';
 
 import * as yup from 'yup';
 import 'react-datepicker/dist/react-datepicker.css';
+import axios from 'axios';
 
 registerLocale('pt', pt);
 
 function Checkout(props) {
+
+  const CHECKOUT_URL = 'http://localhost:3001/mini-ecommerce/checkout/finalizar-compra';
 
   const [dataNascimento, setDataNascimento] = useState(null);
   const [formEnviado, setFormEnviado] = useState(false);
@@ -38,8 +41,24 @@ function Checkout(props) {
     return props.visivel ? 'bg-light p-5' : 'hidden';
   }
 
-  function finalizarCompra(values) {
+  async function finalizarCompra(dados) {
+    if (!dataNascimento) {
+      setFormEnviado(true);
+      return;
+    }
 
+    dados.dataNascimento = dataNascimento;
+    dados.produtos = JSON.stringify(props.produtos);
+    dados.total = `R$ ${props.total}`;
+
+    try {
+      await axios.post(CHECKOUT_URL, dados);
+      setShowModal(true);
+      props.handleLimparCarrinho();
+
+    } catch (error) {
+      setShowErroModal(true);
+    }
   }
 
   function handleDataNascimento(data) {
@@ -56,6 +75,15 @@ function Checkout(props) {
     else
       return "form-control is-invalid"
 
+  }
+
+  function handleContinuar() {
+    setShowModal(false);
+    props.handleExibirProdutos();
+  }
+
+  function handlefecharErroModal() {
+    setShowErroModal(false);
   }
 
   return (
@@ -332,7 +360,7 @@ function Checkout(props) {
               </Col>
             </Form.Group>
 
-            <Modal show={false} data-testid='modal-compra-sucesso'>
+            <Modal show={showModal} data-testid='modal-compra-sucesso' onHide={handleContinuar}>
               <Modal.Header closeButton>
                 <Modal.Title>Compra realizada com sucesso!</Modal.Title>
               </Modal.Header>
@@ -342,11 +370,11 @@ function Checkout(props) {
               </Modal.Body>
 
               <Modal.Footer>
-                <Button variant="success">Continuar</Button>
+                <Button variant="success" onClick={handleContinuar}>Continuar</Button>
               </Modal.Footer>
             </Modal>
 
-            <Modal show={false} data-testid='modal-compra-sucesso'>
+            <Modal show={showErroModal} data-testid='modal-compra-sucesso' onHide={handlefecharErroModal}>
               <Modal.Header closeButton>
                 <Modal.Title>Erro ao processar o pedido.</Modal.Title>
               </Modal.Header>
@@ -356,7 +384,7 @@ function Checkout(props) {
               </Modal.Body>
 
               <Modal.Footer>
-                <Button variant="warning">Continuar</Button>
+                <Button variant="warning" onClick={handlefecharErroModal}>Continuar</Button>
               </Modal.Footer>
             </Modal>
 
